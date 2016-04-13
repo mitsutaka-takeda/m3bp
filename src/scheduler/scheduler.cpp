@@ -87,6 +87,7 @@ void Scheduler::decrement_predecessor_count(PhysicalTaskIdentifier task_id){
 	if(--(it->second->predecessor_count) == 0){
 		const auto &lo = it->second->locality_option;
 		identifier_type w = 0;
+		// how local_option determines if a task is stealable?
 		if(!lo.is_stealable()){
 			w = lo.recommended_worker();
 			m_unstealable_queues[w].push_back(

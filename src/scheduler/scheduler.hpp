@@ -77,6 +77,10 @@ public:
 		std::unique_ptr<PhysicalTaskCommandBase> command,
 		const LocalityOption &option);
 
+	// Add a dependency of a task successor on another task predecessor and returns *this.
+	/*
+	  Returns *this object so that adding dependencies can be chained.
+	*/
 	Scheduler &add_dependency(
 		PhysicalTaskIdentifier predecessor,
 		PhysicalTaskIdentifier successor);

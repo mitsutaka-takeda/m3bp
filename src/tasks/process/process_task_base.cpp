@@ -395,6 +395,8 @@ void ProcessLogicalTaskBase::create_thread_local_finalizers(
 	const auto thread_count = m_thread_local_initialized.size();
 	for(identifier_type i = 0; i < thread_count; ++i){
 		if(!m_thread_local_initialized[i]){ continue; }
+		// because thread-local finalizer must be executed on a specific thread
+		// it's not stealable?
 		const auto finalizer_id = scheduler.create_physical_task(
 			task_id(),
 			make_unique<ProcessCommandWrapper>(

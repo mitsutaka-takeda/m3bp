@@ -154,6 +154,9 @@ void Topology::set_thread_cpubind(identifier_type numa_node){
 	const auto num_nodes = m_available_numa_nodes.size();
 	assert(numa_node < num_nodes);
 	hwloc_obj_t obj;
+	// What's the difference between HWLOC_OBJ_MACHINE and HWLOC_OBJ_NODE ?
+	// https://www.open-mpi.org/projects/hwloc/doc/v1.3.1/a00040.php#gacd37bb612667dc437d66bfb175a8dc55
+	// http://www.training.prace-ri.eu/uploads/tx_pracetmo/affinity.pdf
 	if(num_nodes == 1){
 		obj = hwloc_get_obj_by_type(m_topology, HWLOC_OBJ_MACHINE, 0);
 		if(!obj){
@@ -162,6 +165,7 @@ void Topology::set_thread_cpubind(identifier_type numa_node){
 				"`hwloc_get_obj_by_type(HWLOC_OBJ_MACHINE)`");
 		}
 	}else{
+		// Get the numa nodes with the index m_available_numa_nodes[numa_node].
 		obj = hwloc_get_obj_by_type(
 			m_topology, HWLOC_OBJ_NODE, m_available_numa_nodes[numa_node]);
 		if(!obj){
@@ -169,6 +173,7 @@ void Topology::set_thread_cpubind(identifier_type numa_node){
 				"An error occured on `hwloc_get_obj_by_type(HWLOC_OBJ_NODE)`");
 		}
 	}
+	// Bind current thread to the numa node.
 	if(hwloc_set_cpubind(m_topology, obj->cpuset, HWLOC_CPUBIND_THREAD) != 0){
 		throw std::runtime_error("An error occured on `hwloc_set_cpubind()`");
 	}
@@ -184,6 +189,7 @@ void *Topology::allocate_membind(size_type size){
 void *Topology::allocate_membind(
 	size_type size, identifier_type numa_node)
 {
+	// what is this? First touch?
 	(void)(numa_node);
 	assert(numa_node < m_processing_units_per_node.size());
 	void *ptr = malloc(size);
